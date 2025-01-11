@@ -5,7 +5,8 @@ import subprocess
 
 EXPERIMENTAL_TRIAL_FOLDER = "experimentalTrials"
 CSV_HEADS = {
-    "full": ",game1plays,game2plays,game3plays,game4plays,game5plays",
+    "full1": ",game1plays,game2plays,game3plays,game4plays,game5plays",
+    "full2": ",game1plays,game2plays,game3plays,game4plays,game5plays",
     "1": ",letters",
     "2": ",Clubs,Diamonds,Hearts,Spades",
     "3": ",letters",
@@ -28,17 +29,25 @@ class Wywy(cmd.Cmd):
         csvHead = "result"
         # ensure valid input
         match args[0]:
-            case "full" | "fullExperimentalTrials": # alias moment :P
-                folderPath += "fullExperimentalTrials"
-                scriptPath += "full.ts"
+            # case "full" | "fullExperimentalTrials": # alias moment :P
+            #     folderPath += "fullExperimentalTrials"
+            #     scriptPath += "full.ts"
+            case "full1" | "fullExperimentalTrials1":
+                folderPath += "fullExperimentalTrials1"
+                scriptPath += "fullExperimentalTrials1.ts"
+                csvHead += CSV_HEADS["full1"]
+            case "full2" | "fullExperimentalTrials2":
+                folderPath += "fullExperimentalTrials2"
+                scriptPath += "fullExperimentalTrials2.ts"
+                csvHead += CSV_HEADS["full2"]
             case "1" | "2" | "3" | "4" | "5":
                 folderPath += "game" + args[0]
                 scriptPath += "game" + args[0] + "Trials.ts"
+                csvHead += CSV_HEADS[args[0]]
             case _:
                 print("Wywy smells an invalid input (" + str(args[0]) + ")! Trialtypes can be: full, 1, 2, 3, 4, 5")
                 return
         folderPath += "\\"
-        csvHead += CSV_HEADS[args[0]]
         
         # make the folder if it doesn't exist
         self.optional_folder_creation(folderPath)
