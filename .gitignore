@@ -47,3 +47,10 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+
+# node modules
+node_modules
+package-lock.json
+package.json
+request.json
