@@ -565,10 +565,10 @@ while (numGames < numTrials) {
 
    if (lastGame == 1) { // loss
       output.write("\nL");
-      console.log("\nL" + JSON.stringify(numGamesPlayed));
+      // console.log("\nL" + JSON.stringify(numGamesPlayed));
    } else if (lastGame == 2) { // win
       output.write("\nW");
-      console.log("W" + JSON.stringify(numGamesPlayed));
+      // console.log("W" + JSON.stringify(numGamesPlayed));
    } else {
       console.log("Last game has an invalid value???: ", lastGame);
    }

@@ -2,6 +2,7 @@ import os
 import csv
 import cmd
 import subprocess
+import shutil
 
 EXPERIMENTAL_TRIAL_FOLDER = "experimentalTrials"
 CSV_HEADS = {
@@ -57,6 +58,22 @@ class Wywy(cmd.Cmd):
     prompt = "Wywy (Frog Jump) >> "
     
     # commands:
+    GAMES_TO_PLAY = ["full1", "full2", "1", "2", "3", "4", "5"]
+    FULL_GAME_ALIASES = {"-b": "batches"}
+    FULL_GAME_TYPES = {"batches": int}
+    def do_fullGame(self, arg):
+        "Runs batches of 100,000 trials for every Frog Jump game and the entire Frog Jump game starting from both lily pad 1 and lily pad 2. Data is decimated afterwards. Specify the number of batches after the arg \"-b\". Arguments are also passed into the decimate function."
+        args = self.parseArgs(arg, self.FULL_GAME_ALIASES, self.FULL_GAME_TYPES)
+        
+        if not "batches" in args:
+            print("Wywy is sad that you didn't tell him how many batches to run.")
+            return
+        
+        for i in self.GAMES_TO_PLAY:
+            self.do_play(i + " " + str(args["batches"]))
+        
+        # decimate data afterwards
+        self.do_decimate(arg)
     
     def do_play(self, arg):
         "Runs batches of 100,000 trials for entire or individual Frog Jump games (game number -> arg 1) (number of batches? -> arg 2). Only runs if the first arg is OK (arg = full, 1, 2, 3, 4, 5)."
@@ -103,6 +120,7 @@ class Wywy(cmd.Cmd):
             except ValueError:
                 print("Invalid input.\n")
         for i in range(numDatasets):
+            print("Playing games... (folderPath = " + folderPath + ")")
             if (os.path.isfile(folderPath + "output.csv")):
                 # move old the file elsewhere
                 f = open(folderPath + "output.csv", "r")
@@ -122,8 +140,18 @@ class Wywy(cmd.Cmd):
 
             process = subprocess.run(["npx", "tsx", scriptPath], shell=True)
     
+    DECIMATE_ARG_ALIASES = {
+        "-d": "delete",
+        "-m": "move",
+    }
+    DECIMATE_ARG_RETURNTYPES = {
+        "delete": str,
+        "move": str,
+    }
     def do_decimate(self, arg):
-        "Decimates all the experimental trial data and optionally deletes (argument == \"True\") or moves (arugment == \"Move\") the raw data files. Assume the arguments are case-sensitive."
+        "Decimates all the experimental trial data and optionally deletes (contains argument \"-d\") or moves (contains argument \"-m\") the raw data files. Assume the arguments are case-sensitive."
+        
+        args = self.parseArgs(arg, self.DECIMATE_ARG_ALIASES, self.DECIMATE_ARG_RETURNTYPES)
         
         # Decimate the data.
         for i in EXPERIMENTAL_TRIAL_FOLDER_NAMES: # catch every folder,
@@ -134,10 +162,15 @@ class Wywy(cmd.Cmd):
             # if the output file does not exist yet, remember to add the headers
             if not os.path.isfile(os.path.join(DATA_FOLDER, i + DATA_FILE_EXTENSION)):
                 writeHeaders = True
-            output = open(os.path.join(DATA_FOLDER, i + DATA_FILE_EXTENSION), "a+")
             
             
             filePath = os.path.join(EXPERIMENTAL_TRIAL_FOLDER, i, OUTPUT_FILE_PREFIX + "" + OUTPUT_FILE_SUFFIX + OUTPUT_FILE_EXTENSION)
+            
+            # avoid edgecase where the trials don't exist:
+            if not os.path.isfile(filePath):
+                continue
+            
+            output = open(os.path.join(DATA_FOLDER, i + DATA_FILE_EXTENSION), "a+")
             # avoid edgecase
             if (writeHeaders and os.path.isfile(filePath)):
                 output.write(",".join(OUTPUT_HEADERS[i]))
@@ -193,6 +226,22 @@ class Wywy(cmd.Cmd):
                 counter += 1
                 filePath = os.path.join(EXPERIMENTAL_TRIAL_FOLDER, i, OUTPUT_FILE_PREFIX + str(counter) + OUTPUT_FILE_SUFFIX + OUTPUT_FILE_EXTENSION)
             output.close()
+        
+        if "move" in args:
+            for i in EXPERIMENTAL_TRIAL_FOLDER_NAMES:
+                # check if there is a folder to be moved
+                if os.path.isdir(os.path.join(EXPERIMENTAL_TRIAL_FOLDER, i)):
+                    # self.optional_folder_creation(os.path.join(DATA_FOLDER, i))
+                    shutil.move(os.path.join(EXPERIMENTAL_TRIAL_FOLDER, i), os.path.join(DATA_FOLDER))
+        
+        if "delete" in args:
+            for i in EXPERIMENTAL_TRIAL_FOLDER:
+                try:
+                    shutil.rmtree(os.path.join(EXPERIMENTAL_TRIAL_FOLDER, i))
+                except: # TODO make this catch the one specific error that is expected to potentially arise (directory does not exist)
+                    pass
+        
+        print("Decimation Successfully Completed.")
 
     def do_bye(self, arg):
         "Exit the Wywy CLI."
@@ -200,6 +249,43 @@ class Wywy(cmd.Cmd):
         exit()
     
     # helper functions
+    def parseArgs(self, arg: str, aliases: dict, types: dict) -> dict:
+        """Parses command line arguments given a raw string.
+
+        Args:
+            arg (str): _description_
+            aliases (dict): Aliases to the keys of this dictionary (arguments).
+            types (dict): Expected return types of the keys. e.g. {"wywyness": int, "random attribute whose type doesn't matter": str}
+
+        Returns:
+            dict: A dictionary with pairs of arguments. The values will always be the string passed in afterwards, and None if the respective key was the last argument passed in. These values are only important when the program expects a value (if you're looking for if a user typed in the keywords, just use the "in" keyword). It is the responsibility of another script to cast the values to integers.
+        """
+        
+        args = arg.split(" ")
+        currentKey = None
+        output: dict = {}
+        
+        for i in range(len(args)):
+            # check for aliases
+            if args[i] in aliases:
+                currentKey = aliases[args[i]]
+            else:
+                currentKey = args[i]
+            
+            try:
+                output[currentKey] = types[currentKey](args[i + 1])
+            except KeyError:
+                # invalid argument name
+                # do not inform user about this (because most programs don't do that I guess)
+                pass
+            except IndexError:
+                # edge-case with the last argument
+                output[currentKey] = None
+            except ValueError:
+                # invalid input, LOL
+                print("WARNING: Wywy has detected invalid input relating to this argument!: " + args[i])
+        
+        return output
     def optional_folder_creation(self, path) -> bool:
         """Creates a folder if it doesn't exist
 
