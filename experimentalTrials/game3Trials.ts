@@ -462,17 +462,17 @@ function thirdLilyPad() {
 
    // if two letters are one index away from each other,
    // they must be touching.
-   // The player loses if two letters are touching.
+   // The player wins if two letters are touching.
    let Bs = [gameResult.indexOf("B")];
    Bs.push(gameResult.indexOf("B", Bs[0] + 1)); // this will NEVER error given that there are two B's in PROBABILITY
    let Is = [gameResult.indexOf("I")];
    Is.push(gameResult.indexOf("I", Is[0] + 1));
    if (Math.abs(Bs[0] - Bs[1]) == 1 || Math.abs(Is[0] - Is[1]) == 1) {
-      // loss
-      return [gameResult, false];
-   } else {
       // win
       return [gameResult, true];
+   } else {
+      // loss
+      return [gameResult, false];
    }
 }
 
