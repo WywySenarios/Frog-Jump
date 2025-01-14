@@ -62,7 +62,7 @@ class Wywy(cmd.Cmd):
     FULL_GAME_ALIASES = {"-b": "batches"}
     FULL_GAME_TYPES = {"batches": int}
     def do_fullGame(self, arg):
-        "Runs batches of 100,000 trials for every Frog Jump game and the entire Frog Jump game starting from both lily pad 1 and lily pad 2. Data is decimated afterwards. Specify the number of batches after the arg \"-b\". Arguments are also passed into the decimate function."
+        "Runs batches of 100,000 trials for every Frog Jump game and the entire Frog Jump game starting from both lily pad 1 and lily pad 2. Data is decimated afterwards. Specify the number of batches TO END WITH after the arg \"-b\". Arguments are also passed into the decimate function."
         args = self.parseArgs(arg, self.FULL_GAME_ALIASES, self.FULL_GAME_TYPES)
         
         if not "batches" in args:
@@ -76,7 +76,7 @@ class Wywy(cmd.Cmd):
         self.do_decimate(arg)
     
     def do_play(self, arg):
-        "Runs batches of 100,000 trials for entire or individual Frog Jump games (game number -> arg 1) (number of batches? -> arg 2). Only runs if the first arg is OK (arg = full, 1, 2, 3, 4, 5)."
+        "Runs batches of 100,000 trials for entire or individual Frog Jump games (game number -> arg 1) (number of batches TO END WITH? -> arg 2). Only runs if the first arg is OK (arg = full, 1, 2, 3, 4, 5)."
         args = arg.split(" ")
         folderPath = EXPERIMENTAL_TRIAL_FOLDER + "\\"
         scriptPath = EXPERIMENTAL_TRIAL_FOLDER + "\\"
@@ -119,13 +119,13 @@ class Wywy(cmd.Cmd):
                 numDatasets = int(input("How many datasets do you want?: "))
             except ValueError:
                 print("Invalid input.\n")
-        for i in range(numDatasets):
-            print("Playing games... (folderPath = " + folderPath + ")")
+        i = 1
+        while i < numDatasets:
+            print("Playing games... (folderPath = " + folderPath + ") dataset #" + str(i))
             if (os.path.isfile(folderPath + "output.csv")):
                 # move old the file elsewhere
                 f = open(folderPath + "output.csv", "r")
                 data = f.read()
-                i = 1
                 while (os.path.isfile(folderPath + "output" + str(i) + ".csv")):
                     i += 1
                 
