@@ -8,6 +8,7 @@ EXPERIMENTAL_TRIAL_FOLDER = "experimentalTrials"
 CSV_HEADS = {
     "full1": "result,game1plays,game2plays,game3plays,game4plays,game5plays",
     "full2": "result,game1plays,game2plays,game3plays,game4plays,game5plays",
+    "full3": "result,game1plays,game2plays,game3plays,game4plays,game5plays",
     "1": "result,letters",
     "2": "result,Clubs,Diamonds,Hearts,Spades",
     "3": "result,letters",
