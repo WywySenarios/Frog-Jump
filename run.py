@@ -58,7 +58,7 @@ class Wywy(cmd.Cmd):
     prompt = "Wywy (Frog Jump) >> "
     
     # commands:
-    GAMES_TO_PLAY = ["full1", "full2", "1", "2", "3", "4", "5"]
+    GAMES_TO_PLAY = ["full1", "full3", "1", "2", "3", "4", "5"] # "full2",
     FULL_GAME_ALIASES = {"-b": "batches"}
     FULL_GAME_TYPES = {"batches": int}
     def do_fullGame(self, arg):
@@ -94,6 +94,10 @@ class Wywy(cmd.Cmd):
                 folderPath += "fullExperimentalTrials2"
                 scriptPath += "fullExperimentalTrials2.ts"
                 csvHead = CSV_HEADS["full2"]
+            case "full3" | "fullExperimentalTrials3":
+                folderPath += "fullExperimentalTrials3"
+                scriptPath += "fullExperimentalTrials3.ts"
+                csvHead = CSV_HEADS["full3"]
             case "1" | "2" | "3" | "4" | "5":
                 folderPath += "game" + args[0]
                 scriptPath += "game" + args[0] + "Trials.ts"
@@ -121,7 +125,6 @@ class Wywy(cmd.Cmd):
                 print("Invalid input.\n")
         i = 1
         while i < numDatasets:
-            print("Playing games... (folderPath = " + folderPath + ") dataset #" + str(i))
             if (os.path.isfile(folderPath + "output.csv")):
                 # move old the file elsewhere
                 f = open(folderPath + "output.csv", "r")
@@ -129,6 +132,10 @@ class Wywy(cmd.Cmd):
                 while (os.path.isfile(folderPath + "output" + str(i) + ".csv")):
                     i += 1
                 
+                # avoid playing games if you don't need to
+                if i >= numDatasets:
+                    break
+                print("Playing games... (folderPath = " + folderPath + ") dataset #" + str(i))
                 f = open(folderPath + "output" + str(i) + ".csv", "w+")
                 f.write(data)
                 f.close()
