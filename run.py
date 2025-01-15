@@ -18,6 +18,7 @@ CSV_HEADS = {
 DECIMATION_METHODS = {
     "fullExperimentalTrials1": [["count", "W", "L"], ["sum"], ["sum"], ["sum"], ["sum"], ["sum"]],
     "fullExperimentalTrials2": [["count", "W", "L"], ["sum"], ["sum"], ["sum"], ["sum"], ["sum"]],
+    "fullExperimentalTrials3": [["count", "W", "L"], ["sum"], ["sum"], ["sum"], ["sum"], ["sum"]],
     "game1": [["count", "W", "L"], ["count", "EFTA", "EFAT", "ETAF", "ETFA", "EFA", "FAET", "FATE", "FEAT", "FETA", "FTAE", "FTEA", "ATEF", "ATFE", "AEFT", "AETF", "AFET", "AFTE", "TEAF", "TEFA", "TAEF", "TAFE", "TFEA", "TFAE"]],
     "game2": [["count", "W", "L"], ["sum"], ["sum"], ["sum"], ["sum"]],
     "game3": [["count", "W", "L"], ["skip"]],
@@ -27,6 +28,7 @@ DECIMATION_METHODS = {
 OUTPUT_HEADERS = {
     "fullExperimentalTrials1": ["W", "L", "game1plays", "game2plays", "game3plays", "game4plays", "game5plays"],
     "fullExperimentalTrials2": ["W", "L", "game1plays", "game2plays", "game3plays", "game4plays", "game5plays"],
+    "fullExperimentalTrials3": ["W", "L", "game1plays", "game2plays", "game3plays", "game4plays", "game5plays"],
     "game1": ["W", "L",
         'AEFT', 'AETF', 'AFET', 'AFTE', 'ATEF', 'ATFE', 
         'EAFT', 'EATF', 'EFAT', 'EFTA', 'ETAF', 'ETFA', 
