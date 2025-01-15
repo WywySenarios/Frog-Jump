@@ -1,6 +1,6 @@
 import fs from "fs";
 // START: File storage
-const filePath = "experimentalTrials\\fullExperimentalTrials2\\";
+const filePath = "experimentalTrials\\fullExperimentalTrials3\\";
 /**
  * Output in the form of W or L, proceeded by an integer number of games played, in a object like form.
  * {game1, game2, etc.}
