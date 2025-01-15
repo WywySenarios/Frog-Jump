@@ -44,6 +44,7 @@ OUTPUT_FILE_EXTENSION = ".csv"
 EXPERIMENTAL_TRIAL_FOLDER_NAMES = [
     "fullExperimentalTrials1",
     "fullExperimentalTrials2",
+    'fullExperimentalTrials3',
     "game1",
     "game2",
     "game3",
