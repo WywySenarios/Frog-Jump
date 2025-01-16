@@ -59,9 +59,15 @@ DATA_FILE_EXTENSION = ".csv"
 
 class Wywy(cmd.Cmd):
     intro = "Welcome to Wywy for Frog Jump Testing. Type help to list commands.\n"
-    prompt = "Wywy (Frog Jump) >> "
     
     # commands:
+    def do_cd(self, arg):
+        if os.path.exists(arg):
+            self.experimental_trial_folder = arg
+            self.prompt = "Wywy (Frog Jump, TrialFolder=" + self.experimental_trial_folder + ") >> "
+        else:
+            print("Wywy is sad because you gave him an invalid input. Please give a valid path.")
+    
     GAMES_TO_PLAY = ["full1", "full3", "1", "2", "3", "4", "5"] # "full2",
     FULL_GAME_ALIASES = {"-b": "batches"}
     FULL_GAME_TYPES = {"batches": int}
@@ -70,7 +76,7 @@ class Wywy(cmd.Cmd):
         args = self.parseArgs(arg, self.FULL_GAME_ALIASES, self.FULL_GAME_TYPES)
         
         if not "batches" in args:
-            print("Wywy is sad that you didn't tell him how many batches to run.")
+            print("Wywy is sad because you didn't tell him how many batches to run.")
             return
         
         for i in self.GAMES_TO_PLAY:
@@ -82,8 +88,8 @@ class Wywy(cmd.Cmd):
     def do_play(self, arg):
         "Runs batches of 100,000 trials for entire or individual Frog Jump games (game number -> arg 1) (number of batches TO END WITH? -> arg 2). Only runs if the first arg is OK (arg = full, 1, 2, 3, 4, 5)."
         args = arg.split(" ")
-        folderPath = EXPERIMENTAL_TRIAL_FOLDER + "\\"
-        scriptPath = EXPERIMENTAL_TRIAL_FOLDER + "\\"
+        folderPath = self.experimental_trial_folder + "\\"
+        scriptPath = self.experimental_trial_folder + "\\"
         csvHead = ""
         # ensure valid input
         match args[0]:
@@ -175,7 +181,7 @@ class Wywy(cmd.Cmd):
                 writeHeaders = True
             
             
-            filePath = os.path.join(EXPERIMENTAL_TRIAL_FOLDER, i, OUTPUT_FILE_PREFIX + "" + OUTPUT_FILE_SUFFIX + OUTPUT_FILE_EXTENSION)
+            filePath = os.path.join(self.experimental_trial_folder, i, OUTPUT_FILE_PREFIX + "" + OUTPUT_FILE_SUFFIX + OUTPUT_FILE_EXTENSION)
             
             # avoid edgecase where the trials don't exist:
             if not os.path.isfile(filePath):
@@ -235,20 +241,20 @@ class Wywy(cmd.Cmd):
                 
                 
                 counter += 1
-                filePath = os.path.join(EXPERIMENTAL_TRIAL_FOLDER, i, OUTPUT_FILE_PREFIX + str(counter) + OUTPUT_FILE_SUFFIX + OUTPUT_FILE_EXTENSION)
+                filePath = os.path.join(self.experimental_trial_folder, i, OUTPUT_FILE_PREFIX + str(counter) + OUTPUT_FILE_SUFFIX + OUTPUT_FILE_EXTENSION)
             output.close()
         
         if "move" in args:
             for i in EXPERIMENTAL_TRIAL_FOLDER_NAMES:
                 # check if there is a folder to be moved
-                if os.path.isdir(os.path.join(EXPERIMENTAL_TRIAL_FOLDER, i)):
+                if os.path.isdir(os.path.join(self.experimental_trial_folder, i)):
                     # self.optional_folder_creation(os.path.join(DATA_FOLDER, i))
-                    shutil.move(os.path.join(EXPERIMENTAL_TRIAL_FOLDER, i), os.path.join(DATA_FOLDER))
+                    shutil.move(os.path.join(self.experimental_trial_folder, i), os.path.join(DATA_FOLDER))
         
         if "delete" in args:
-            for i in EXPERIMENTAL_TRIAL_FOLDER:
+            for i in self.experimental_trial_folder:
                 try:
-                    shutil.rmtree(os.path.join(EXPERIMENTAL_TRIAL_FOLDER, i))
+                    shutil.rmtree(os.path.join(self.experimental_trial_folder, i))
                 except: # TODO make this catch the one specific error that is expected to potentially arise (directory does not exist)
                     pass
         
@@ -312,6 +318,11 @@ class Wywy(cmd.Cmd):
             return True
         else:
             return False
+
+    # Hooks?
+    def preloop(self):
+        self.experimental_trial_folder = EXPERIMENTAL_TRIAL_FOLDER
+        self.prompt = "Wywy (Frog Jump, TrialFolder=" + self.experimental_trial_folder + ") >> "
 
 
         
