@@ -237,7 +237,10 @@ class Wywy(cmd.Cmd):
                     
                     # I LOVE python in this very instant
                     # BRO WHAT THE HELL IS ",".join(array) EVEN MEAN???
-                    output.write("\n" + ",".join(list(map(lambda x: str(dataToWrite[x]), OUTPUT_HEADERS[i]))))
+                    try:
+                        output.write("\n" + ",".join(list(map(lambda x: str(dataToWrite[x]), OUTPUT_HEADERS[i]))))
+                    except KeyError: # ignore empty games
+                        pass
                 
                 
                 counter += 1
