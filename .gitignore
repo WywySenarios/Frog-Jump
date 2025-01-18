@@ -55,5 +55,11 @@ package-lock.json
 package.json
 request.json
 
-# ignore utility files
-utility/
+# ignore utility output
+utility/*.png
+utility/*.aux
+utility/*.fdb_latexmk
+utility/*.fls
+utility/*.log
+utility/*.pdf
+utility/*.synctex.gz
