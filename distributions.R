@@ -67,8 +67,10 @@ findWinProbability <- function(point) point / trialSize
 
 for (x in 1:length(wins)) {
   hist(unlist(lapply(wins[x], findWinProbability)),
-    # hist(unlist(wins[x]),
+  #hist(unlist(wins[x]),
+    freq = FALSE,
     main = titles[x],
+    #xlab = "Wins (/100 000)",
     xlab = "Winrate",
     col = colors[x],
   )
